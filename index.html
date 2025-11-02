@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Remote Controller - Abhishek Singh</title>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+  }
+
+  body {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  /* ============== MAIN LAYOUT (REMOTE LEFT, VIDEO RIGHT) ============== */
+  .main-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    flex-wrap: wrap;
+  }
+
+  /* ================= VIDEO AREA ================= */
+  .video-container {
+    position: relative;
+    width: 800px;
+    height: 450px;
+    border: 3px solid #38bdf8;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(0,0,0,0.7);
+  }
+
+  video {
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    background: black;
+  }
+
+  /* ================= REMOTE CONTROL ================= */
+  .remote-container {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(25px);
+    border-radius: 35px;
+    padding: 30px 40px;
+    width: 420px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+    text-align: center;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .remote-header {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #38bdf8;
+    font-weight: 700;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+  }
+
+  .btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 18px;
+    padding: 14px;
+    margin: 5px;
+    width: 70px;
+    color: white;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+
+  .btn:hover {
+    background: #38bdf8;
+    color: #0f172a;
+    transform: translateY(-3px) scale(1.08);
+  }
+
+  .power {
+    background: #ef4444;
+    font-weight: 700;
+  }
+
+  .power.on {
+    background: #22c55e;
+  }
+
+  .section { margin: 15px 0; }
+  .row { display: flex; justify-content: center; gap: 12px; }
+
+  .display {
+    margin-top: 15px;
+    background: rgba(255,255,255,0.1);
+    padding: 12px;
+    border-radius: 15px;
+    font-size: 16px;
+    color: #cbd5e1;
+    min-height: 28px;
+    text-align: center;
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.3);
+  }
+
+  /* ================= FOOTER ================= */
+  footer {
+    position: absolute;
+    bottom: 15px;
+    font-size: 1rem;
+    color: #38bdf8;
+    font-weight: 600;
+    text-shadow: 0 0 10px #38bdf8, 0 0 20px #38bdf8;
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from { text-shadow: 0 0 8px #38bdf8, 0 0 12px #38bdf8; }
+    to { text-shadow: 0 0 20px #38bdf8, 0 0 40px #0ea5e9; }
+  }
+
+  /* ============== RESPONSIVE DESIGN ============== */
+  @media (max-width: 1000px) {
+    .main-container {
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .video-container {
+      width: 90%;
+      height: auto;
+    }
+
+    .remote-container {
+      width: 85%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="main-container">
+  <!-- LEFT: REMOTE CONTROL -->
+  <div class="remote-container">
+    <div class="remote-header">🎮 Video Remote Control</div>
+
+    <div class="section">
+      <button class="btn power" id="powerBtn">Power</button>
+    </div>
+
+    <div class="section">
+      <div class="row">
+        <button class="btn" id="playBtn">Play</button>
+        <button class="btn" id="pauseBtn">Pause</button>
+        <button class="btn" id="okBtn">Reset</button>
+      </div>
+      <div class="row">
+        <button class="btn" id="backwardBtn">⏪ 10s</button>
+        <button class="btn" id="forwardBtn">⏩ 10s</button>
+      </div>
+      <div class="row">
+        <button class="btn" id="volDown">Vol -</button>
+        <button class="btn" id="volUp">Vol +</button>
+        <button class="btn" id="speedBtn">Speed x2</button>
+      </div>
+    </div>
+
+    <div class="display" id="display">Video is ready...</div>
+  </div>
+
+  <!-- RIGHT: VIDEO PLAYER -->
+  <div class="video-container">
+    <video id="videoPlayer" 
+      src="https://50117354-30e3-4131-9d72-f7b49fc135f4.mdnplay.dev/shared-assets/videos/sintel-short.mp4"
+      controlslist="nodownload noplaybackrate" 
+      disablePictureInPicture>
+    </video>
+  </div>
+</div>
+
+<footer>🎬 Project by Abhishek Singh</footer>
+
+<script>
+  const powerBtn = document.getElementById("powerBtn");
+  const display = document.getElementById("display");
+  const video = document.getElementById("videoPlayer");
+
+  let powerOn = false;
+
+  function updateDisplay(msg) {
+    display.textContent = msg;
+  }
+
+  powerBtn.addEventListener("click", () => {
+    powerOn = !powerOn;
+    powerBtn.classList.toggle("on");
+    updateDisplay(powerOn ? "Power ON" : "Power OFF");
+  });
+
+  function ensurePower() {
+    if(!powerOn) {
+      updateDisplay("⚡ Turn ON first!");
+      return false;
+    }
+    return true;
+  }
+
+  document.getElementById("playBtn").addEventListener("click", () => {
+    if(!ensurePower()) return;
+    video.play();
+    updateDisplay("▶️ Playing Video");
+  });
+
+  document.getElementById("pauseBtn").addEventListener("click", () => {
+    if(!ensurePower()) return;
+    video.pause();
+    updateDisplay("⏸️ Video Paused");
+  });
+
+  document.getElementById("okBtn").addEventListener("click", () => {
+    if(!ensurePower()) return;
+    video.currentTime = 0;
+    video.pause();
+    updateDisplay("🔁 Video Reset");
+  });
+
+  document.getElementById("forwardBtn").addEventListener("click", () => {
+    if(!ensurePower()) return;
+    video.currentTime += 10;
+    updateDisplay("⏩ Skipped 10s Forward");
+  });
+
+  document.getElementById("backwardBtn").addEventListener("click", () => {
+    if(!ensurePower()) return;
+    video.currentTime = Math.max(video.currentTime - 10, 0);
+    updateDisplay("⏪ Rewind 10s");
+  });
+
+  document.getElementById("volUp").addEventListener("click", () => {
+    if(!ensurePower()) return;
+    video.volume = Math.min(video.volume + 0.1, 1);
+    updateDisplay(`🔊 Volume: ${Math.round(video.volume*100)}%`);
+  });
+
+  document.getElementById("volDown").addEventListener("click", () => {
+    if(!ensurePower()) return;
+    video.volume = Math.max(video.volume - 0.1, 0);
+    updateDisplay(`🔉 Volume: ${Math.round(video.volume*100)}%`);
+  });
+
+  document.getElementById("speedBtn").addEventListener("click", () => {
+    if(!ensurePower()) return;
+    if(video.playbackRate === 1) video.playbackRate = 2;
+    else video.playbackRate = 1;
+    updateDisplay(`⚙️ Speed: x${video.playbackRate}`);
+  });
+</script>
+
+</body>
+</html>
